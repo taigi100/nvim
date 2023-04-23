@@ -5,10 +5,17 @@ lsp.preset("recommended")
 lsp.ensure_installed({
   'tsserver',
   'rust_analyzer',
+  'lua_ls',
+  'cssls',
+  'html',
+  'diagnosticls',
+  'dockerls',
+  'tsserver',
+  'eslint'
 })
 
 -- Fix Undefined global 'vim'
-lsp.configure('lua-language-server', {
+lsp.configure('lua_ls', {
     settings = {
         Lua = {
             diagnostics = {
@@ -18,18 +25,43 @@ lsp.configure('lua-language-server', {
     }
 })
 
+--Enable (broadcasting) snippet capability for completion
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities.textDocument.completion.completionItem.snippetSupport = true
+
+lsp.configure('cssls', {
+    capabilities = capabilities,
+})
+
+lsp.configure('html', {
+    capabilities = capabilities,
+})
+
+lsp.configure('diagnosticls', {})
+
+lsp.configure('dockerls', {})
+
+lsp.configure('tsserver', {})
+
+lsp.configure('eslint', {
+    on_attach = function(client, bufnr)
+        vim.api.nvim_create_autocmd("BufWritePre", {
+            buffer = bufnr,
+            command = "EslintFixAll",
+        })
+    end,
+})
 
 local cmp = require('cmp')
 local cmp_select = {behavior = cmp.SelectBehavior.Select}
 local cmp_mappings = lsp.defaults.cmp_mappings({
   ['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
   ['<C-n>'] = cmp.mapping.select_next_item(cmp_select),
-  ['<C-y>'] = cmp.mapping.confirm({ select = true }),
+  ['<Tab>'] = cmp.mapping.confirm({ select = true }),
   ["<C-Space>"] = cmp.mapping.complete(),
 })
 
-cmp_mappings['<Tab>'] = nil
-cmp_mappings['<S-Tab>'] = nil
+
 
 lsp.setup_nvim_cmp({
   mapping = cmp_mappings
@@ -38,12 +70,25 @@ lsp.setup_nvim_cmp({
 lsp.set_preferences({
     suggest_lsp_servers = false,
     sign_icons = {
-        error = 'E',
-        warn = 'W',
-        hint = 'H',
-        info = 'I'
+        error = '',
+        warn = '',
+        hint = '',
+        info = ''
     }
 })
+
+lsp.set_sign_icons({
+    error = '',
+    warn = '',
+    hint = '',
+    info = ''
+})
+
+local signs = { Error = " ", Warning = " ", Hint = " ", Information = " " }
+for type, icon in pairs(signs) do
+  local hl = "LspDiagnosticsSign" .. type
+  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
+end
 
 lsp.on_attach(function(client, bufnr)
   local opts = {buffer = bufnr, remap = false}

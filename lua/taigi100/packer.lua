@@ -6,7 +6,7 @@ vim.cmd [[packadd packer.nvim]]
 return require('packer').startup(function(use)
   -- Packer can manage itself
   use 'wbthomason/packer.nvim'
-    
+
   -- Fuzzy searches and such
   use {
 	  'nvim-telescope/telescope.nvim', tag = '0.1.1',
@@ -14,8 +14,8 @@ return require('packer').startup(function(use)
 	  requires = { {'nvim-lua/plenary.nvim'} }
   }
 
-  use 'navarasu/onedark.nvim'
-    
+  use { 'navarasu/onedark.nvim', as = 'onedark' }
+
   use ({
 	  'nvim-treesitter/nvim-treesitter',
 	  {
@@ -66,12 +66,12 @@ return require('packer').startup(function(use)
       end
   }
 
-  use { 
+  use {
       'nvim-lualine/lualine.nvim',
       requires = { 'nvim-tree/nvim-web-devicons', opt = true }
-  } 
+  }
 
-  use "lukas-reineke/indent-blankline.nvim"  
+  use "lukas-reineke/indent-blankline.nvim"
 
   use {
       'numToStr/Comment.nvim',
@@ -83,14 +83,14 @@ return require('packer').startup(function(use)
   use {
       "nvim-neo-tree/neo-tree.nvim",
       branch = "v2.x",
-      requires = { 
+      requires = {
           "nvim-lua/plenary.nvim",
           "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
           "MunifTanjim/nui.nvim",
       }
   }
 
-  use {
+--[[   use {
       'rmagatti/auto-session',
       config = function()
           require("auto-session").setup {
@@ -109,7 +109,7 @@ return require('packer').startup(function(use)
           })
 
       end
-  }
+  } ]]
 
   use {
       "nvim-telescope/telescope-file-browser.nvim",
@@ -150,8 +150,61 @@ return require('packer').startup(function(use)
       config = function() require("nvim-autopairs").setup {} end
   }
 
+  use {'akinsho/bufferline.nvim', tag = "*", requires = 'nvim-tree/nvim-web-devicons'}
 
+  use { 'bennypowers/nvim-regexplainer',
+  config = function() require'regexplainer'.setup() end,
+  requires = {
+      'nvim-treesitter/nvim-treesitter',
+      'MunifTanjim/nui.nvim',
+  } }
+
+
+  use 'windwp/nvim-ts-autotag'
+
+  use {
+      'gelguy/wilder.nvim',
+      config = function()
+          -- config goes here
+      end,
+  }
+
+  use("github/copilot.vim")
+
+  use {
+      "ThePrimeagen/refactoring.nvim",
+      requires = {
+          {"nvim-lua/plenary.nvim"},
+          {"nvim-treesitter/nvim-treesitter"}
+      }
+  }
+
+  use {
+      "nvim-telescope/telescope-project.nvim",
+      requires = {
+          {"nvim-telescope/telescope.nvim"},
+          {"nvim-telescope/telescope-file-browser.nvim"}
+      }
+  }
+
+  use 'mfussenegger/nvim-dap'
+
+  use { "rcarriga/nvim-dap-ui", requires = {"mfussenegger/nvim-dap"} }
+
+  use {
+      "FeiyouG/command_center.nvim",
+      requires = { "nvim-telescope/telescope.nvim" }
+  }
+
+  use { "mxsdev/nvim-dap-vscode-js", requires = {"mfussenegger/nvim-dap"} }
+
+  use {
+      "microsoft/vscode-js-debug",
+      opt = true,
+      run = "npm install --legacy-peer-deps && npx gulp dapDebugServer"
+  }
 
 
   end)
+
 
